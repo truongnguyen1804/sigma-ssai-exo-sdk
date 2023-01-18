@@ -26,6 +26,7 @@ public class PlayActivity extends AppCompatActivity {
     private Timeline.Window windowLive = null;
     private Timeline.Period periodLive = null;
     public static final String TAG_LISTENER = "ExoPlayer_listener";
+    private AdsTracking.TrackingParams trackingParams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,39 @@ public class PlayActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(() -> updatePosition(), 1000);
         exoPlayer.addListener(listener);
+
+        trackingParams = new AdsTracking.TrackingParams() {
+            @Override
+            public long onTimeUpdate() {
+                if (exoPlayer != null) {
+                    if (exoPlayer.isPlayingAd())
+                        return -1;
+                    if (exoPlayer.isCurrentMediaItemDynamic()) {
+                        // live
+                        if (windowLive == null) {
+                            windowLive = new Timeline.Window();
+                        }
+                        if (periodLive == null) {
+                            periodLive = new Timeline.Period();
+                        }
+                        if (!exoPlayer.getCurrentTimeline().isEmpty()) {
+                            long positionInPeriod = exoPlayer.getCurrentPosition(); // in period
+                            long position = positionInPeriod;
+                            Timeline.Period p = exoPlayer.getCurrentTimeline().getPeriod(exoPlayer.getCurrentPeriodIndex(), periodLive);
+                            long positionInWindows = p.getPositionInWindowMs();
+                            position -= positionInWindows;
+                            return position;
+                        }
+                    } else {
+                        // vod
+                        long position = exoPlayer.getCurrentPosition();
+                        return position;
+                    }
+                }
+                return -1;
+            }
+        };
+        AdsTracking.getInstance().setParamsTracking(trackingParams);
     }
 
     // get current time media
