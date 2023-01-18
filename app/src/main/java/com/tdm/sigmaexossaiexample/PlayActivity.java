@@ -44,8 +44,7 @@ public class PlayActivity extends AppCompatActivity {
             // input is url SSAI
             if (typeEx == MainActivity.EX_SSAI_LINK) {
                 String urlSSAI = intent.getStringExtra("url_ssai");
-                AdsTracking.getInstance().initSession(urlSSAI,
-                        new AdsTracking.InitSessionListener() {
+                AdsTracking.getInstance().initSession(urlSSAI, new AdsTracking.InitSessionListener() {
                             @Override
                             public void onResponse(int code, String url) {
                                 PlayActivity.this.runOnUiThread(new Runnable() {
@@ -55,15 +54,12 @@ public class PlayActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-
                             @Override
                             public void onError(int code) {
                                 Log.e(TAG, "Code " + code);
                             }
 
                         });
-
-
             }
             // input is url source and url tracking
             else if (typeEx == MainActivity.EX_SOURCE_LINK) {
