@@ -1,17 +1,23 @@
 # sigma-ssai-exo-sdk
+### Requirement 
+
+```
+minSdk 21
+```
+
 ### Import SDK
 
-Tải xuống [sigma-dai-exo-ssai-sdk](https://github.com/truongnguyen1804/sigma-ssai-exo-sdk/blob/main/sigma-dai-exo-ssai/sigma-dai-exo-ssai.aar) về dự án của bạn và cấu hình nó như một thư viện
+Download [sigma-dai-exo-ssai-sdk](https://github.com/truongnguyen1804/sigma-ssai-exo-sdk/blob/main/sigma-dai-exo-ssai/sigma-dai-exo-ssai.aar) to your project and configure it as a library.
 
 #### Example
 
-##### Bước 1:
+##### Step 1:
 
-Có hai cách cài đặt sdk:
+There are two ways to install the sdk:
 
-###### Cách 1: Khởi tạo phiên hoạt động trong SDK (Init Session)
+###### Option 1: Initialize session in SDK (Init session)
 
-Sau khi khởi tạo phiên hoạt động trong SDK, SDK sẽ trả về một SourceUrl --> configPlayer(url)
+After initializing the session in the SDK, the SDK returns a SourceUrl --> configPlayer(url)
 
 ```
 AdsTracking.getInstance().initSession(urlSSAI, new AdsTracking.InitSessionListener() {
@@ -32,7 +38,7 @@ AdsTracking.getInstance().initSession(urlSSAI, new AdsTracking.InitSessionListen
         });
 ```
 
-###### Cách 2: SourceUrl và TrackingUrl có sẵn
+###### Option 2: SourceUrl and TrackingUrl are available
 
 ```
 AdsTracking.getInstance().setUrlTracking(urlTracking);
@@ -41,11 +47,11 @@ configPlayer(urlSource);
 
 
 
-##### Bước 2:
+##### Step 2:
 
-###### Cung cấp thời gian cho SDK từ player qua AdsTracking.TrackingParams
+###### Provide SDK timing from player via AdsTracking.TrackingParams
 
-Khởi tạo một giao diện AdsTracking.TrackingParams trackingParams:
+Initialize an AdsTracking.TrackingParams trackingParams interface:
 
 ```
 trackingParams = new AdsTracking.TrackingParams() {
@@ -81,11 +87,11 @@ trackingParams = new AdsTracking.TrackingParams() {
 };
 ```
 
-Trong đó `onTimeUpdate()` cần trả về thời gian của player
+Where `onTimeUpdate()` needs to return the player's time
 
-##### Bước 3: 
+##### Step 3: 
 
-Lắng nghe sự kiện sẵn sàng phát của player
+Listen to player's ready to play event
 
 ```
 @Override
@@ -97,13 +103,13 @@ public void onPlaybackStateChanged(int playbackState) {
 }
 ```
 
-Bắt đầu tracking bằng cách gọi `AdsTracking.getInstance().startTracking()` khi sự kiện phát lại của player sẵn sàng.
+Start tracking by calling `AdsTracking.getInstance().startTracking()` when the player's playback event is ready.
 
 
 
-##### Chú ý:
+##### Note:
 
-Gọi `stopTracking()` khi player gặp sự cố
+Call `stopTracking()` when the player has an error
 
 ```
 @Override
@@ -112,7 +118,7 @@ public void onPlayerError(PlaybackException error) {
 }
 ```
 
-Gọi `destroy()`  khi PlayActivity bị phá huỷ
+Call `destroy()` when the activity is destroyed
 
 ```
 @Override

@@ -163,7 +163,6 @@ public class PlayActivity extends AppCompatActivity {
             if (playbackState == ExoPlayer.STATE_READY) {
                 AdsTracking.getInstance().startTracking();
             }
-
         }
 
         @Override
