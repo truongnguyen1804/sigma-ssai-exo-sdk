@@ -35,7 +35,6 @@ public class PlayActivity extends AppCompatActivity {
         initView();
     }
 
-
     private void initView() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -45,21 +44,22 @@ public class PlayActivity extends AppCompatActivity {
             if (typeEx == MainActivity.EX_SSAI_LINK) {
                 String urlSSAI = intent.getStringExtra("url_ssai");
                 AdsTracking.getInstance().initSession(urlSSAI, new AdsTracking.InitSessionListener() {
+                    @Override
+                    public void onResponse(int code, String url) {
+                        PlayActivity.this.runOnUiThread(new Runnable() {
                             @Override
-                            public void onResponse(int code, String url) {
-                                PlayActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        configPlayer(url);
-                                    }
-                                });
+                            public void run() {
+                                configPlayer(url);
                             }
-                            @Override
-                            public void onError(int code) {
-                                Log.e(TAG, "Code " + code);
-                            }
-
                         });
+                    }
+
+                    @Override
+                    public void onError(int code) {
+                        Log.e(TAG, "Code " + code);
+                    }
+
+                });
             }
             // input is url source and url tracking
             else if (typeEx == MainActivity.EX_SOURCE_LINK) {
@@ -67,11 +67,9 @@ public class PlayActivity extends AppCompatActivity {
                 String urlTracking = intent.getStringExtra("url_tracking");
                 AdsTracking.getInstance().setUrlTracking(urlTracking);
                 configPlayer(urlSource);
-
             }
         }
         playerView = findViewById(R.id.player_view_id);
-
     }
 
     private void configPlayer(String url) {
@@ -124,6 +122,14 @@ public class PlayActivity extends AppCompatActivity {
             }
         };
         AdsTracking.getInstance().setParamsTracking(trackingParams);
+        AdsTracking.getInstance().setTrackingListener(new AdsTracking.TrackingListener() {
+            @Override
+            public void onError(int i, String s) {
+                // action when getTracking error
+                Log.d("TrackingListener", s + " -- " + i);
+            }
+        });
+
     }
 
     // get current time media
